@@ -38,4 +38,11 @@ public class EmployeeController {
     public Mono<EmployeeDto> updateEmployee(@RequestBody EmployeeDto employeeDto, @PathVariable("id") String employeeId) {
         return employeeService.updateEmployee(employeeDto,employeeId);
     }
+
+    // Build Reactive Delete Employee REST API
+    @DeleteMapping("{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public Mono<Void> deleteEmployee(@PathVariable("id") String employeeId) {
+        return employeeService.deleteEmployee(employeeId);
+    }
 }
