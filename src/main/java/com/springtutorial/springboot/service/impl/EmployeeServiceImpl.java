@@ -18,6 +18,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         // convert EmployeeDTO into Employee Entity
         Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
         Mono<Employee> savedEmployee = employeeRepository.save(employee);
-        return savedEmployee.map((employeeEntity) -> EmployeeMapper.mapToEmployeeDto(employeeEntity));
+        return savedEmployee.map(EmployeeMapper::mapToEmployeeDto);
+    }
+
+    @Override
+    public Mono<EmployeeDto> getEmployee(String employeeId) {
+        Mono<Employee> foundEmployee = employeeRepository.findById(employeeId);
+        return foundEmployee.map(EmployeeMapper::mapToEmployeeDto);
     }
 }
