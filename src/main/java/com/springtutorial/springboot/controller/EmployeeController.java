@@ -5,6 +5,7 @@ import com.springtutorial.springboot.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -20,9 +21,15 @@ public class EmployeeController {
         return employeeService.saveEmployee(employeeDto);
     }
 
-    // Build Reactive Get Single
+    // Build Reactive Get Single Employee REST API
     @GetMapping("{id}")
     public Mono<EmployeeDto> getEmployee(@PathVariable("id") String employeeId) {
         return employeeService.getEmployee(employeeId);
+    }
+
+    // Build Reactive Get All Employees REST API
+    @GetMapping
+    public Flux<EmployeeDto> getAllEmployees() {
+        return employeeService.getAllEmployees();
     }
 }

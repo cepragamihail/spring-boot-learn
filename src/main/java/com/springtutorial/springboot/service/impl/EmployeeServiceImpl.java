@@ -7,6 +7,7 @@ import com.springtutorial.springboot.repository.EmployeeRepository;
 import com.springtutorial.springboot.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -25,5 +26,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Mono<EmployeeDto> getEmployee(String employeeId) {
         Mono<Employee> foundEmployee = employeeRepository.findById(employeeId);
         return foundEmployee.map(EmployeeMapper::mapToEmployeeDto);
+    }
+
+    @Override
+    public Flux<EmployeeDto> getAllEmployees() {
+        Flux<Employee> employeeFlux = employeeRepository.findAll();
+        return employeeFlux.map(EmployeeMapper::mapToEmployeeDto).switchIfEmpty(Flux.empty());
     }
 }
