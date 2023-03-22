@@ -14,9 +14,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 @WebFluxTest(controllers = EmployeeController.class)
@@ -78,6 +81,32 @@ class EmployeeControllerTest {
                 .jsonPath("$.firstName").isEqualTo(employeeDto.getFirstName())
                 .jsonPath("$.lastName").isEqualTo(employeeDto.getLastName())
                 .jsonPath("$.email").isEqualTo(employeeDto.getEmail());
+    }
+
+    @Test
+    @DisplayName("Unit test to get all Employee")
+    public void givenListOfEmployees_whenGetAllEmplyees_thenListOfEmployee() {
+        // given - pre-condition or set up
+        List<EmployeeDto> list = new ArrayList<>();
+        EmployeeDto employeeDto1 = new EmployeeDto();
+        employeeDto1.setFirstName("Mihail1");
+        employeeDto1.setLastName("Cepraga1");
+        employeeDto1.setEmail("cepraga.mihail.leon@gamil.com");
+        list.add(employeeDto);
+        list.add(employeeDto1);
+        Flux<EmployeeDto> employeeFlux = Flux.fromIterable(list);
+        BDDMockito.given(employeeService.getAllEmployees())
+                .willReturn(employeeFlux);
+
+        // when - action or behavior
+        WebTestClient.ResponseSpec response = webTestClient.get().uri("/api/employees")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange();
+
+        // then - verify the result or output
+        response.expectStatus().isOk()
+                .expectBodyList(EmployeeDto.class)
+                .consumeWith(System.out::println);
     }
 
 }
