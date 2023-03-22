@@ -109,6 +109,31 @@ class EmployeeControllerTest {
                 .consumeWith(System.out::println);
     }
 
+    @Test
+    @DisplayName("Unit test for update Employee")
+    public void givenUpdatedEmployee_whenUpdateEmployee_thenReturnUpdatedEmployeeObject() {
+        // given - pre-condition or set up
+        String employeeId = "123456";
+        employeeDto.setFirstName("Mihail_U");
+        employeeDto.setLastName("Cepraga_U");
+
+        BDDMockito.given(employeeService.updateEmployee(ArgumentMatchers.any(EmployeeDto.class), ArgumentMatchers.any(String.class)))
+                .willReturn(Mono.just(employeeDto));
+
+        // when - action or behavior
+        WebTestClient.ResponseSpec response = webTestClient.put().uri("/api/employees/{id}", Collections.singletonMap("id", employeeId))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(employeeDto), EmployeeDto.class)
+                .exchange();
+
+        // then - verify the result or output
+        response.expectStatus().isOk()
+                .expectBody()
+                .consumeWith(System.out::println)
+                .jsonPath("$.firstName").isEqualTo(employeeDto.getFirstName())
+                .jsonPath("$.lastName").isEqualTo(employeeDto.getLastName());
+    }
 
 
 }
