@@ -85,7 +85,7 @@ public class EmployeeControllerIntegrationTest {
         employeeDto2.setLastName("Cepraga_002");
         employeeDto2.setEmail("cepraga.mihail.leon@gmail.com");
 
-        employeeService.saveEmployee(employeeDto2).block();
+        employeeService.saveEmployee(employeeDto1).block();
         employeeService.saveEmployee(employeeDto2).block();
 
         webTestClient.get().uri("/api/employees")
@@ -94,5 +94,33 @@ public class EmployeeControllerIntegrationTest {
                 .expectStatus().isOk()
                 .expectBody()
                 .consumeWith(System.out::println);
+    }
+
+    @Test
+    @DisplayName("Integration test to update Employee")
+    public void updateEmployeeTest() {
+        EmployeeDto employeeDto = new EmployeeDto();
+        employeeDto.setFirstName("Mihail_N");
+        employeeDto.setLastName("Cepraga_N");
+        employeeDto.setEmail("cepraga.mihail.leon@gmail.com");
+        EmployeeDto savedEmployeeDto = employeeService.saveEmployee(employeeDto).block();
+
+        EmployeeDto updatedEmployeeDto = new EmployeeDto();
+        updatedEmployeeDto.setFirstName("Mihail_U");
+        updatedEmployeeDto.setLastName("Cepraga_U");
+        updatedEmployeeDto.setEmail("cepraga.mihail.leon@gmail.com");
+
+        assert savedEmployeeDto != null;
+
+        webTestClient.put().uri("/api/employees/{id}", Collections.singletonMap("id",savedEmployeeDto.getId()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(updatedEmployeeDto), EmployeeDto.class)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .consumeWith(System.out::println)
+                .jsonPath("$.firstName").isEqualTo(updatedEmployeeDto.getFirstName())
+                .jsonPath("$.lastName").isEqualTo(updatedEmployeeDto.getLastName());
     }
 }
