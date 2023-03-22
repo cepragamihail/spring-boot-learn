@@ -1,7 +1,9 @@
 package com.springtutorial.springboot.controller;
 
 import com.springtutorial.springboot.dto.EmployeeDto;
+import com.springtutorial.springboot.repository.EmployeeRepository;
 import com.springtutorial.springboot.service.EmployeeService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,13 @@ public class EmployeeControllerIntegrationTest {
     private EmployeeService employeeService;
     @Autowired
     private WebTestClient webTestClient;
+    @Autowired
+    private EmployeeRepository employeeRepository;
+    @BeforeEach
+    public void before() {
+        System.out.println("Before each test");
+        employeeRepository.deleteAll().subscribe();
+    }
 
     @Test
     @DisplayName("Integration test to save Employee")
