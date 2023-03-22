@@ -123,4 +123,23 @@ public class EmployeeControllerIntegrationTest {
                 .jsonPath("$.firstName").isEqualTo(updatedEmployeeDto.getFirstName())
                 .jsonPath("$.lastName").isEqualTo(updatedEmployeeDto.getLastName());
     }
+
+    @Test
+    @DisplayName("Integration test to delete Employee")
+    public void deleteEmployeeTes() {
+        EmployeeDto employeeDto = new EmployeeDto();
+        employeeDto.setFirstName("Mihail_D");
+        employeeDto.setLastName("Cepraga_D");
+        employeeDto.setEmail("cepraga.mihail.leon@gmail.com");
+        EmployeeDto savedEmployeeDto = employeeService.saveEmployee(employeeDto).block();
+
+        assert savedEmployeeDto != null;
+
+        webTestClient.delete().uri("/api/employees/{id}", Collections.singletonMap("id",savedEmployeeDto.getId()))
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isNoContent()
+                .expectBody()
+                .consumeWith(System.out::println);
+    }
 }
