@@ -44,8 +44,8 @@ public class EmployeeControllerIntegrationTest {
     @DisplayName("Integration test to get single Employee")
     public void getEmployeeTest() {
         EmployeeDto employeeDto = new EmployeeDto();
-        employeeDto.setFirstName("Mihail_003");
-        employeeDto.setLastName("Cepraga_003");
+        employeeDto.setFirstName("Mihail_");
+        employeeDto.setLastName("Cepraga_");
         employeeDto.setEmail("cepraga.mihail.leon@gmail.com");
 
         EmployeeDto savedEmployee = employeeService.saveEmployee(employeeDto).block();
@@ -61,5 +61,29 @@ public class EmployeeControllerIntegrationTest {
                 .jsonPath("$.firstName").isEqualTo(employeeDto.getFirstName())
                 .jsonPath("$.lastName").isEqualTo(employeeDto.getLastName())
                 .jsonPath("$.email").isEqualTo(employeeDto.getEmail());
+    }
+
+    @Test
+    @DisplayName("Integration test to get all Employee")
+    public void getAllEmployeesTest() {
+        EmployeeDto employeeDto1 = new EmployeeDto();
+        employeeDto1.setFirstName("Mihail_001");
+        employeeDto1.setLastName("Cepraga_001");
+        employeeDto1.setEmail("cepraga.mihail.leon@gmail.com");
+
+        EmployeeDto employeeDto2 = new EmployeeDto();
+        employeeDto2.setFirstName("Mihail_002");
+        employeeDto2.setLastName("Cepraga_002");
+        employeeDto2.setEmail("cepraga.mihail.leon@gmail.com");
+
+        employeeService.saveEmployee(employeeDto2).block();
+        employeeService.saveEmployee(employeeDto2).block();
+
+        webTestClient.get().uri("/api/employees")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .consumeWith(System.out::println);
     }
 }
