@@ -85,7 +85,7 @@ class EmployeeControllerTest {
 
     @Test
     @DisplayName("Unit test to get all Employee")
-    public void givenListOfEmployees_whenGetAllEmplyees_thenListOfEmployee() {
+    public void givenListOfEmployees_whenGetAllEmployees_thenListOfEmployee() {
         // given - pre-condition or set up
         List<EmployeeDto> list = new ArrayList<>();
         EmployeeDto employeeDto1 = new EmployeeDto();
@@ -108,5 +108,7 @@ class EmployeeControllerTest {
                 .expectBodyList(EmployeeDto.class)
                 .consumeWith(System.out::println);
     }
+
+
 
 }
