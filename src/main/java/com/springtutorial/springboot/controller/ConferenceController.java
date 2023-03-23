@@ -7,5 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ConferenceController {
 
     @GetMapping("/about")
-    public void about() {}
+    public String about() {
+        return "Join us online September 1-2!";
+    }
 }
