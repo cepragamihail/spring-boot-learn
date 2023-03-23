@@ -9,6 +9,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -27,7 +29,9 @@ class ConferenceControllerTest {
 
     @Test
     public void aboutReturnsConferenceInfo() throws Exception {
-        this.mockMvc.perform(get("/about")).andExpect(status().isOk());
+        this.mockMvc.perform(get("/about"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Join us online September 1-2!"));
     }
 
 }
