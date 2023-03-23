@@ -6,7 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -23,8 +27,10 @@ class ConferenceControllerTest {
     private MockMvc mockMvc;
 
     @BeforeEach
-    public void  setup() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+    public void setup() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
     }
 
     @Test
@@ -32,6 +38,14 @@ class ConferenceControllerTest {
         this.mockMvc.perform(get("/about"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Join us online September 1-2!"));
+    }
+
+    @Test
+    public void greetingReturnHelloAndUsername() throws Exception {
+        this.mockMvc.perform(get("/greeting")
+                        .with(user("Ria")))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Hello, Ria!"));
     }
 
 }
